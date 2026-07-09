@@ -342,6 +342,7 @@ custom_components/fineme/
 ├── manifest.json        # 域: fineme, iot_class: cloud_polling
 ├── config_flow.py       # 输入账号密码 → login → 保存配置
 ├── const.py             # 域名、API URL、指令常量
+├── coord_convert.py     # BD09↔GCJ02↔WGS84 坐标转换
 ├── coordinator.py       # DataUpdateCoordinator，30秒轮询
 │                        # 并行调 GetTracking + GetDeviceStatus
 │                        # 首次额外调 GetDeviceDetail
@@ -366,7 +367,7 @@ custom_components/fineme/
 4. **Paramter 拼写** - SendCommandByAPP 的参数名拼写为 `Paramter`（非 Parameter）
 5. **XML 响应中 HTML 实体** - 如 `&amp;` 需要解码 (json.loads 前 XML 解析器会处理)
 6. **isGPS 含义**: 0=GPS有效, 1=GPS有效(带差分), 2=LBS基站(精度低约500m)
-7. **坐标系统**: API 返回百度坐标系 (BD09LL)，如需 GCJ02/WGS84 需转换
+7. **坐标系统**: API 返回百度坐标系 (BD09)，集成已自动转换为 WGS84 用于 HA 地图显示，原始 BD09 坐标保存在 entity attributes 中
 8. **告警类型**: 常见有 "求救报警"、"越界报警"、"低电量报警" 等
 9. **设备休眠**: isSleep=1 时设备不响应指令，返回 -2 (离线)
 10. **S168JUST 指令**: Model 513 发送后，需通过 GetResponse 轮询等待设备上报新位置

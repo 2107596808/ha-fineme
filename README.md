@@ -98,7 +98,6 @@ custom_components/fineme/
 ├── manifest.json        # 集成元数据
 ├── sensor.py            # 传感器 (电量/信号/速度/告警/固件)
 ├── strings.json         # UI 字符串
-├── API_REFERENCE.md     # API 接口参考文档
 └── translations/
     ├── en.json
     └── zh-Hans.json
