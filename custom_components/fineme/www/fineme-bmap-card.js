@@ -46,10 +46,35 @@ class FinemeBMapCard extends HTMLElement {
       }, 200);
       return;
     }
+
+    // Load CSS first
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'https://api.map.baidu.com/res/webgl/10/bmap.css';
+    document.head.appendChild(link);
+
+    // Load JS directly (avoid document.write in bootstrap)
     const script = document.createElement('script');
     script.id = 'bmap-js-api';
-    script.src = `https://api.map.baidu.com/api?v=3.0&type=webgl&ak=${this._bmapKey}`;
-    script.onload = () => this._createMap();
+    script.src = `https://api.map.baidu.com/getscript?type=webgl&v=1.0&ak=${this._bmapKey}`;
+    script.onload = () => {
+      // BMapGL may need a moment to initialize
+      if (window.BMapGL) {
+        this._createMap();
+      } else {
+        const wait = setInterval(() => {
+          if (window.BMapGL) {
+            clearInterval(wait);
+            this._createMap();
+          }
+        }, 200);
+        setTimeout(() => clearInterval(wait), 10000);
+      }
+    };
+    script.onerror = () => {
+      this._container.innerHTML = '<div style="padding:20px;text-align:center;color:#f44;">Failed to load Baidu Maps API</div>';
+    };
     document.head.appendChild(script);
   }
 
