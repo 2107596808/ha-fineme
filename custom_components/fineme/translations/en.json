@@ -1,0 +1,86 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Fineme GPS Tracker",
+                "description": "Enter your device credentials to connect to the Fineme service.",
+                "data": {
+                    "username": "Username (IMEI)",
+                    "password": "Password",
+                    "scan_interval": "Update interval (seconds)"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Cannot connect to server, please check network",
+            "invalid_auth": "Invalid username or password",
+            "no_device": "No bound device found",
+            "unknown": "Unknown error, please check logs"
+        },
+        "abort": {
+            "already_configured": "This device is already configured"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Fineme Options",
+                "data": {
+                    "scan_interval": "Update interval (seconds)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "device_tracker": {
+            "tracker": {
+                "name": "Location Tracker"
+            }
+        },
+        "sensor": {
+            "battery": {
+                "name": "Battery"
+            },
+            "signal": {
+                "name": "Signal Strength"
+            },
+            "speed": {
+                "name": "Speed"
+            },
+            "alarm": {
+                "name": "Latest Alarm"
+            },
+            "firmware": {
+                "name": "Firmware Version"
+            },
+            "iccid": {
+                "name": "ICCID"
+            },
+            "imei": {
+                "name": "IMEI"
+            }
+        },
+        "binary_sensor": {
+            "charging": {
+                "name": "Charging"
+            },
+            "online": {
+                "name": "Online"
+            },
+            "sleeping": {
+                "name": "Sleeping"
+            },
+            "sos_alarm": {
+                "name": "SOS Alarm"
+            }
+        },
+        "button": {
+            "locate_now": {
+                "name": "Locate Now"
+            },
+            "power_off": {
+                "name": "Force Power Off"
+            }
+        }
+    }
+}

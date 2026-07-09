@@ -1,0 +1,11 @@
+{
+    "domain": "fineme",
+    "name": "Fineme GPS Tracker",
+    "codeowners": [],
+    "config_flow": true,
+    "dependencies": [],
+    "documentation": "",
+    "iot_class": "cloud_polling",
+    "version": "1.0.0",
+    "requirements": []
+}
