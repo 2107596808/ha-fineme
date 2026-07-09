@@ -26,8 +26,10 @@ class FinemeAMapCard extends HTMLElement {
     this.style.display = 'block';
     this.style.height = this._height + 'px';
     this.style.position = 'relative';
-    this.innerHTML = `<div id="amap-container-${this._entityId.replace('.', '-')}"
-      style="width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;"></div>`;
+
+    this._container = document.createElement('div');
+    this._container.style.cssText = 'width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;';
+    this.appendChild(this._container);
     this._loadAMap();
   }
 
@@ -54,11 +56,9 @@ class FinemeAMapCard extends HTMLElement {
 
   _createMap() {
     if (!window.AMap) return;
-    const containerId = `amap-container-${this._entityId.replace('.', '-')}`;
-    const container = this.querySelector(`#${containerId}`);
-    if (!container) return;
+    if (!this._container) return;
 
-    this._map = new AMap.Map(container, {
+    this._map = new AMap.Map(this._container, {
       zoom: this._zoom,
       center: [116.397428, 39.90923],
       mapStyle: this._style,

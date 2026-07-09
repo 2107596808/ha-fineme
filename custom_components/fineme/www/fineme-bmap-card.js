@@ -25,8 +25,10 @@ class FinemeBMapCard extends HTMLElement {
     this.style.display = 'block';
     this.style.height = this._height + 'px';
     this.style.position = 'relative';
-    this.innerHTML = `<div id="bmap-container-${this._entityId.replace('.', '-')}"
-      style="width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;"></div>`;
+
+    this._container = document.createElement('div');
+    this._container.style.cssText = 'width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;';
+    this.appendChild(this._container);
     this._loadBMap();
   }
 
@@ -53,12 +55,10 @@ class FinemeBMapCard extends HTMLElement {
 
   _createMap() {
     if (!window.BMapGL) return;
-    const containerId = `bmap-container-${this._entityId.replace('.', '-')}`;
-    const container = this.querySelector(`#${containerId}`);
-    if (!container) return;
+    if (!this._container) return;
 
     const BMapGL = window.BMapGL;
-    this._map = new BMapGL.Map(container);
+    this._map = new BMapGL.Map(this._container);
     this._map.centerAndZoom(new BMapGL.Point(116.404, 39.915), this._zoom);
     this._map.enableScrollWheelZoom(true);
 

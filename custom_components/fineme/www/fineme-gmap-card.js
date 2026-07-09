@@ -25,8 +25,10 @@ class FinemeGMapCard extends HTMLElement {
     this.style.display = 'block';
     this.style.height = this._height + 'px';
     this.style.position = 'relative';
-    this.innerHTML = `<div id="gmap-container-${this._entityId.replace('.', '-')}"
-      style="width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;"></div>`;
+
+    this._container = document.createElement('div');
+    this._container.style.cssText = 'width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;';
+    this.appendChild(this._container);
     this._loadGMap();
   }
 
@@ -57,12 +59,10 @@ class FinemeGMapCard extends HTMLElement {
 
   _createMap() {
     if (!window.google || !window.google.maps) return;
-    const containerId = `gmap-container-${this._entityId.replace('.', '-')}`;
-    const container = this.querySelector(`#${containerId}`);
-    if (!container) return;
+    if (!this._container) return;
 
     const gm = window.google.maps;
-    this._map = new gm.Map(container, {
+    this._map = new gm.Map(this._container, {
       zoom: this._zoom,
       center: { lat: 39.909, lng: 116.397 },
       mapTypeId: this._mapType,
