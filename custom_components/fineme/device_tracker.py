@@ -10,6 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import CONF_DEVICE_ID, CONF_DEVICE_NAME, CONF_MODEL, DOMAIN
+from .coord_convert import bd09_to_wgs84
 from .coordinator import FinemeCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,30 +58,35 @@ class FinemeTracker(CoordinatorEntity, TrackerEntity):
         """Return the source type."""
         return SourceType.GPS
 
-    @property
-    def latitude(self) -> float | None:
-        """Return latitude."""
+    def _get_raw_coords(self) -> tuple[float, float] | None:
+        """Return raw (BD09) latitude and longitude, or None."""
         if self.coordinator.data and self.coordinator.data.get("tracking"):
             tracking = self.coordinator.data["tracking"]
             try:
                 lat = float(tracking.get("lat", 0))
-                if lat != 0:
-                    return lat
+                lng = float(tracking.get("lng", 0))
+                if lat != 0 and lng != 0:
+                    return lat, lng
             except (ValueError, TypeError):
                 pass
         return None
 
     @property
+    def latitude(self) -> float | None:
+        """Return latitude (WGS84, converted from BD09)."""
+        coords = self._get_raw_coords()
+        if coords:
+            _, wgs_lat = bd09_to_wgs84(coords[1], coords[0])
+            return wgs_lat
+        return None
+
+    @property
     def longitude(self) -> float | None:
-        """Return longitude."""
-        if self.coordinator.data and self.coordinator.data.get("tracking"):
-            tracking = self.coordinator.data["tracking"]
-            try:
-                lng = float(tracking.get("lng", 0))
-                if lng != 0:
-                    return lng
-            except (ValueError, TypeError):
-                pass
+        """Return longitude (WGS84, converted from BD09)."""
+        coords = self._get_raw_coords()
+        if coords:
+            wgs_lng, _ = bd09_to_wgs84(coords[1], coords[0])
+            return wgs_lng
         return None
 
     @property
@@ -105,6 +111,19 @@ class FinemeTracker(CoordinatorEntity, TrackerEntity):
         attrs = {}
         if self.coordinator.data and self.coordinator.data.get("tracking"):
             tracking = self.coordinator.data["tracking"]
+
+            # Original BD09 coordinates (for Baidu map use)
+            try:
+                bd_lat = float(tracking.get("lat", 0))
+                bd_lng = float(tracking.get("lng", 0))
+                if bd_lat != 0 and bd_lng != 0:
+                    attrs["bd09_latitude"] = bd_lat
+                    attrs["bd09_longitude"] = bd_lng
+            except (ValueError, TypeError):
+                pass
+
+            # Coordinate system info
+            attrs["coordinate_system"] = "WGS84 (BD09 original in attributes)"
 
             # Speed
             try:
