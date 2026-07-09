@@ -81,6 +81,9 @@
             "find_device": {
                 "name": "Find Device"
             },
+            "emergency": {
+                "name": "Emergency Mode"
+            },
             "power_off": {
                 "name": "Force Power Off"
             }

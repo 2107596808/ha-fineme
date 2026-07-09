@@ -81,6 +81,9 @@
             "find_device": {
                 "name": "寻找设备"
             },
+            "emergency": {
+                "name": "紧急模式"
+            },
             "power_off": {
                 "name": "强制关机"
             }

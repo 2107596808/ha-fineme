@@ -15,6 +15,7 @@ from .const import (
     CMD_LOCATE_NOW,
     CMD_POWER_OFF,
     CMD_FIND_DEVICE,
+    CMD_EMERGENCY,
     CONF_DEVICE_ID,
     CONF_DEVICE_NAME,
     CONF_MODEL,
@@ -49,6 +50,14 @@ BUTTON_DESCRIPTIONS: tuple[FinemeButtonEntityDescription, ...] = (
         icon="mdi:bell-ring",
         command_type=CMD_FIND_DEVICE,
         confirm_required=False,
+    ),
+    FinemeButtonEntityDescription(
+        key="emergency",
+        translation_key="emergency",
+        name="紧急模式",
+        icon="mdi:alert-octagon",
+        command_type=CMD_EMERGENCY,
+        confirm_required=True,
     ),
     FinemeButtonEntityDescription(
         key="power_off",
