@@ -1,7 +1,9 @@
 """The Fineme GPS Tracker integration."""
 
 import logging
+import os
 
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
@@ -15,6 +17,8 @@ from .const import (
 from .coordinator import FinemeCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
+JS_URL = f"/fineme/fineme-amap-card.js"
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -39,7 +43,56 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
+    # Register static path for Lovelace card
+    www_dir = os.path.join(os.path.dirname(__file__), "www")
+    if os.path.isdir(www_dir):
+        await hass.http.async_register_static_paths([
+            StaticPathConfig("/fineme", www_dir, cache_headers=False)
+        ])
+
+    # Auto-register AMap card as Lovelace resource
+    await _async_register_lovelace_resource(hass)
+
     return True
+
+
+async def _async_register_lovelace_resource(hass: HomeAssistant) -> None:
+    """Register the AMap card JS as a Lovelace resource."""
+    try:
+        from homeassistant.components.lovelace import (
+            resources,
+            ResourceNotFound,
+        )
+        from homeassistant.components.lovelace.resources import ResourceCollection
+
+        # Access the resource collection
+        ll_conf = hass.data.get("lovelace")
+        if ll_conf is None:
+            return
+
+        res_collection = getattr(ll_conf, "resources", None)
+        if res_collection is None:
+            return
+
+        # Check if already registered
+        for res in res_collection.async_items():
+            if res.get("url") == JS_URL:
+                _LOGGER.debug("AMap card resource already registered")
+                return
+
+        # Register new resource
+        await res_collection.async_create_item({
+            "res_type": "module",
+            "url": JS_URL,
+        })
+        _LOGGER.info("Registered AMap card resource: %s", JS_URL)
+
+    except Exception as err:
+        _LOGGER.warning(
+            "Could not auto-register AMap card. "
+            "Please add %s as a Lovelace resource manually: %s",
+            JS_URL, err
+        )
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

@@ -70,6 +70,50 @@ HACS 会自动检测更新，也可在集成页面手动点击更新。
 |---|---|---|
 | 刷新间隔 | 30 秒 | 数据轮询间隔 (建议不低于 15 秒) |
 
+## 高德地图卡片
+
+集成自带高德地图自定义 Lovelace 卡片 (`fineme-amap-card`)，安装集成后会自动注册资源。
+
+### 使用方式
+
+1. 进入 HA 仪表盘 → **编辑仪表盘** → **添加卡片** → **手动卡片**
+2. 粘贴以下 YAML 配置：
+
+```yaml
+type: custom:fineme-amap-card
+entity: device_tracker.fineme_b6_05086  # 替换为你的 entity_id
+zoom: 16
+height: 400
+map_style: 'amap://styles/normal'        # 可选: light/dark/fresh/grey/blue
+amap_key: 'YOUR_AMAP_KEY'                # 填写你的高德 JS API Key
+```
+
+### 卡片配置参数
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `entity` | (必填) | device_tracker 实体 ID |
+| `zoom` | 16 | 初始缩放级别 (3-18) |
+| `height` | 400 | 卡片高度 (像素) |
+| `amap_key` | (必填) | 高德地图 JS API Key，可在 [高德开放平台](https://lbs.amap.com/) 免费申请 |
+| `map_style` | `amap://styles/normal` | 地图样式 (normal/light/dark/fresh/grey/blue) |
+| `use_bd09` | `false` | 是否使用原始百度坐标 (true=BD09, false=WGS84自动转GCJ02) |
+| `battery_entity` | (可选) | 电量传感器实体 ID，显示在信息窗口 |
+
+### 地图样式示例
+
+| style 值 | 效果 |
+|---|---|
+| `amap://styles/normal` | 标准地图 |
+| `amap://styles/light` | 月光银 |
+| `amap://styles/dark` | 雅士灰 |
+| `amap://styles/fresh` | 草色青 |
+| `amap://styles/grey` | 远山蓝 |
+| `amap://styles/blue` | 远峰蓝 |
+
+> **注意**: 如自动注册资源失败，请手动添加 Lovelace 资源：
+> 设置 → 仪表盘 → 资源 → 添加资源 → URL: `/fineme/fineme-amap-card.js`，类型: JavaScript 模块
+
 ## 技术说明
 
 ### API
@@ -109,6 +153,8 @@ custom_components/fineme/
 ├── manifest.json        # 集成元数据
 ├── sensor.py            # 传感器 (电量/信号/速度/告警/固件)
 ├── strings.json         # UI 字符串
+├── www/
+│   └── fineme-amap-card.js  # 高德地图 Lovelace 卡片
 └── translations/
     ├── en.json
     └── zh-Hans.json
