@@ -1,4 +1,4 @@
-class FinemeAMapCard extends HTMLElement {
+class FinemeGMapCard extends HTMLElement {
   set hass(hass) {
     this._hass = hass;
     if (!this._initialized) {
@@ -12,9 +12,8 @@ class FinemeAMapCard extends HTMLElement {
     this._entityId = config.entity;
     this._zoom = config.zoom || 16;
     this._height = config.height || 400;
-    this._amapKey = config.amap_key || '9582d1736f0764d428e71660183c7031';
-    this._style = config.map_style || 'amap://styles/normal';
-    this._useBD09 = config.use_bd09 || false;
+    this._gmapKey = config.gmap_key || '';
+    this._mapType = config.map_type || 'roadmap';
   }
 
   getCardSize() {
@@ -26,19 +25,19 @@ class FinemeAMapCard extends HTMLElement {
     this.style.display = 'block';
     this.style.height = this._height + 'px';
     this.style.position = 'relative';
-    this.innerHTML = `<div id="amap-container-${this._entityId.replace('.', '-')}"
+    this.innerHTML = `<div id="gmap-container-${this._entityId.replace('.', '-')}"
       style="width:100%;height:100%;border-radius:var(--ha-card-border-radius,12px);overflow:hidden;"></div>`;
-    this._loadAMap();
+    this._loadGMap();
   }
 
-  _loadAMap() {
-    if (window.AMap) {
+  _loadGMap() {
+    if (window.google && window.google.maps) {
       this._createMap();
       return;
     }
-    if (document.getElementById('amap-js-api')) {
+    if (document.getElementById('gmap-js-api')) {
       const checkInterval = setInterval(() => {
-        if (window.AMap) {
+        if (window.google && window.google.maps) {
           clearInterval(checkInterval);
           this._createMap();
         }
@@ -46,31 +45,39 @@ class FinemeAMapCard extends HTMLElement {
       return;
     }
     const script = document.createElement('script');
-    script.id = 'amap-js-api';
-    script.src = `https://webapi.amap.com/maps?v=2.0&key=${this._amapKey}`;
+    script.id = 'gmap-js-api';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${this._gmapKey}&v=weekly`;
     script.onload = () => this._createMap();
+    script.onerror = () => {
+      this.innerHTML = `<div style="padding:20px;text-align:center;color:#f44;">
+        Failed to load Google Maps API. Check your API key and network.</div>`;
+    };
     document.head.appendChild(script);
   }
 
   _createMap() {
-    if (!window.AMap) return;
-    const containerId = `amap-container-${this._entityId.replace('.', '-')}`;
+    if (!window.google || !window.google.maps) return;
+    const containerId = `gmap-container-${this._entityId.replace('.', '-')}`;
     const container = this.querySelector(`#${containerId}`);
     if (!container) return;
 
-    this._map = new AMap.Map(container, {
+    const gm = window.google.maps;
+    this._map = new gm.Map(container, {
       zoom: this._zoom,
-      center: [116.397428, 39.90923],
-      mapStyle: this._style,
-      viewMode: '2D',
+      center: { lat: 39.909, lng: 116.397 },
+      mapTypeId: this._mapType,
+      disableDefaultUI: false,
+      zoomControl: true,
+      streetViewControl: false,
+      mapTypeControl: true,
     });
 
-    this._marker = new AMap.Marker({
+    this._marker = new gm.Marker({
       map: this._map,
-      animation: 'AMAP_ANIMATION_DROP',
+      animation: gm.Animation.DROP,
     });
 
-    this._circle = new AMap.Circle({
+    this._circle = new gm.Circle({
       map: this._map,
       strokeColor: '#3388ff',
       strokeWeight: 2,
@@ -78,6 +85,8 @@ class FinemeAMapCard extends HTMLElement {
       fillColor: '#3388ff',
       fillOpacity: 0.1,
     });
+
+    this._infoWindow = new gm.InfoWindow();
 
     this._update();
   }
@@ -87,30 +96,25 @@ class FinemeAMapCard extends HTMLElement {
     const entity = this._hass.states[this._entityId];
     if (!entity) return;
 
-    let lat, lng;
     const attrs = entity.attributes || {};
-
-    if (this._useBD09 && attrs.bd09_latitude && attrs.bd09_longitude) {
-      lat = parseFloat(attrs.bd09_latitude);
-      lng = parseFloat(attrs.bd09_longitude);
-    } else {
-      lat = parseFloat(entity.attributes.latitude);
-      lng = parseFloat(entity.attributes.longitude);
-    }
+    // Google Maps uses WGS84 coordinates
+    let lat = parseFloat(entity.attributes.latitude);
+    let lng = parseFloat(entity.attributes.longitude);
 
     if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
 
-    const position = new AMap.LngLat(lng, lat);
+    const gm = window.google.maps;
+    const position = { lat, lng };
     this._marker.setPosition(position);
-    this._map.setCenter(position);
+    this._map.panTo(position);
 
     const accuracy = parseFloat(attrs.gps_accuracy) || 0;
     if (accuracy > 0) {
       this._circle.setCenter(position);
       this._circle.setRadius(accuracy);
-      this._circle.show();
+      this._circle.setVisible(true);
     } else {
-      this._circle.hide();
+      this._circle.setVisible(false);
     }
 
     const speed = attrs.speed !== undefined ? `${attrs.speed} km/h` : '';
@@ -120,20 +124,16 @@ class FinemeAMapCard extends HTMLElement {
       ? (this._hass.states[this._config.battery_entity]?.state || '?')
       : '';
 
-    let infoContent = `<div style="font-size:13px;line-height:1.8;padding:4px 8px;">
+    let content = `<div style="font-size:13px;line-height:1.8;padding:4px 8px;">
       <b>${entity.attributes.friendly_name || this._entityId}</b><br>`;
-    if (posTime) infoContent += `📍 ${posTime}<br>`;
-    if (speed) infoContent += `🏃 ${speed}<br>`;
-    if (source) infoContent += `📡 ${source}<br>`;
-    if (battery) infoContent += `🔋 ${battery}%<br>`;
-    infoContent += `🌐 ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    infoContent += '</div>';
+    if (posTime) content += `📍 ${posTime}<br>`;
+    if (speed) content += `🏃 ${speed}<br>`;
+    if (source) content += `📡 ${source}<br>`;
+    if (battery) content += `🔋 ${battery}%<br>`;
+    content += `🌐 ${lat.toFixed(6)}, ${lng.toFixed(6)}</div>`;
 
-    if (!this._infoWindow) {
-      this._infoWindow = new AMap.InfoWindow({ offset: new AMap.Pixel(0, -30) });
-    }
-    this._infoWindow.setContent(infoContent);
-    this._infoWindow.open(this._map, position);
+    this._infoWindow.setContent(content);
+    this._infoWindow.open(this._map, this._marker);
   }
 
   static getStubConfig() {
@@ -141,11 +141,10 @@ class FinemeAMapCard extends HTMLElement {
       entity: 'device_tracker.fineme_tracker',
       zoom: 16,
       height: 400,
-      amap_key: '9582d1736f0764d428e71660183c7031',
-      map_style: 'amap://styles/normal',
-      use_bd09: false,
+      gmap_key: '',
+      map_type: 'roadmap',
     };
   }
 }
 
-customElements.define('fineme-amap-card', FinemeAMapCard);
+customElements.define('fineme-gmap-card', FinemeGMapCard);

@@ -18,7 +18,11 @@ from .coordinator import FinemeCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-JS_URL = f"/fineme/fineme-amap-card.js"
+JS_URLS = [
+    "/fineme/fineme-amap-card.js",
+    "/fineme/fineme-bmap-card.js",
+    "/fineme/fineme-gmap-card.js",
+]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -76,22 +80,27 @@ async def _async_register_lovelace_resource(hass: HomeAssistant) -> None:
 
         # Check if already registered
         for res in res_collection.async_items():
-            if res.get("url") == JS_URL:
-                _LOGGER.debug("AMap card resource already registered")
-                return
+            if res.get("url") in JS_URLS:
+                continue
+            # Don't re-register any of our URLs
 
-        # Register new resource
-        await res_collection.async_create_item({
-            "res_type": "module",
-            "url": JS_URL,
-        })
-        _LOGGER.info("Registered AMap card resource: %s", JS_URL)
+        # Register new resources
+        existing_urls = {r.get("url") for r in res_collection.async_items()}
+        for url in JS_URLS:
+            if url not in existing_urls:
+                await res_collection.async_create_item({
+                    "res_type": "module",
+                    "url": url,
+                })
+                _LOGGER.info("Registered map card resource: %s", url)
+            else:
+                _LOGGER.debug("Map card resource already registered: %s", url)
 
     except Exception as err:
         _LOGGER.warning(
-            "Could not auto-register AMap card. "
-            "Please add %s as a Lovelace resource manually: %s",
-            JS_URL, err
+            "Could not auto-register map cards. "
+            "Please add these as Lovelace resources manually: %s",
+            ", ".join(JS_URLS) + f" | Error: {err}"
         )
 
 
