@@ -109,15 +109,11 @@ class FinemeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry):
         """Get the options flow for this handler."""
-        return FinemeOptionsFlow(config_entry)
+        return FinemeOptionsFlow()
 
 
 class FinemeOptionsFlow(config_entries.OptionsFlow):
     """Handle options flow for Fineme."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
 
     async def async_step_init(self, user_input: dict | None = None) -> FlowResult:
         """Manage the options."""
