@@ -1,0 +1,6 @@
+{
+    "name": "Fineme GPS Tracker",
+    "content_in_root": false,
+    "render_readme": true,
+    "country": ["CN"]
+}

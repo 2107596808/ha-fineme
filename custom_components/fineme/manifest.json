@@ -4,7 +4,8 @@
     "codeowners": [],
     "config_flow": true,
     "dependencies": [],
-    "documentation": "",
+    "documentation": "https://github.com/2107596808/ha-fineme",
+    "issue_tracker": "https://github.com/2107596808/ha-fineme/issues",
     "iot_class": "cloud_polling",
     "version": "1.0.0",
     "requirements": []
