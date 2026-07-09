@@ -70,83 +70,13 @@ HACS 会自动检测更新，也可在集成页面手动点击更新。
 |---|---|---|
 | 刷新间隔 | 30 秒 | 数据轮询间隔 (建议不低于 15 秒) |
 
-## 自定义地图卡片
+## 地图显示
 
-集成自带三种地图自定义 Lovelace 卡片，安装后会自动注册资源。
-在仪表盘 → **编辑仪表盘** → **添加卡片** → **手动卡片** 中粘贴 YAML 即可使用。
+集成已将 BD09 坐标自动转换为 WGS84，可直接使用 **HA 内置地图卡片** 显示设备位置。
 
-### 高德地图 (`fineme-amap-card`)
+使用方法：仪表盘 → 添加卡片 → 地图 → 选择你的设备实体即可。
 
-```yaml
-type: custom:fineme-amap-card
-entity: device_tracker.fineme_b6_05086
-zoom: 16
-height: 400
-map_style: 'amap://styles/normal'   # 可选: light/dark/fresh/grey/blue
-amap_key: 'YOUR_AMAP_KEY'            # 高德开放平台免费申请
-```
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `amap_key` | (必填) | 高德 JS API Key，[申请地址](https://lbs.amap.com/) |
-| `map_style` | `amap://styles/normal` | 地图样式: normal/light/dark/fresh/grey/blue |
-| `use_bd09` | `false` | true=使用BD09原始坐标, false=使用WGS84(自动转GCJ02) |
-
-### 百度地图 (`fineme-bmap-card`)
-
-```yaml
-type: custom:fineme-bmap-card
-entity: device_tracker.fineme_b6_05086
-zoom: 18
-height: 400
-bmap_key: 'YOUR_BMAP_KEY'            # 百度地图开放平台免费申请
-```
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `bmap_key` | (必填) | 百度 JS API Key，[申请地址](https://lbsyun.baidu.com/) |
-| `map_style` | `normal` | 地图样式ID，可在百度地图开放平台自定义 |
-
-> 百度地图直接使用 BD09 坐标，自动从 entity attributes 中读取 `bd09_latitude`/`bd09_longitude`，无需坐标转换。
-
-### Google Maps (`fineme-gmap-card`)
-
-```yaml
-type: custom:fineme-gmap-card
-entity: device_tracker.fineme_b6_05086
-zoom: 16
-height: 400
-gmap_key: 'YOUR_GMAP_KEY'            # Google Cloud Console 申请
-map_type: 'roadmap'                   # 可选: satellite/hybrid/terrain
-```
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `gmap_key` | (必填) | Google Maps API Key，[申请地址](https://console.cloud.google.com/) |
-| `map_type` | `roadmap` | 地图类型: roadmap/satellite/hybrid/terrain |
-
-> Google Maps 使用 WGS84 坐标，与 HA 默认地图相同。
-
-### 通用参数 (三种卡片均支持)
-
-| 参数 | 默认值 | 说明 |
-|---|---|---|
-| `entity` | (必填) | device_tracker 实体 ID |
-| `zoom` | 16 | 初始缩放级别 (3-18) |
-| `height` | 400 | 卡片高度 (像素) |
-| `battery_entity` | (可选) | 电量传感器实体 ID，显示在信息窗口 |
-
-### 坐标系对照
-
-| 地图 | 卡片 | 坐标系 | 转换说明 |
-|---|---|---|---|
-| 高德 | `fineme-amap-card` | GCJ02 | WGS84 自动转 GCJ02 (火星坐标) |
-| 百度 | `fineme-bmap-card` | BD09 | 直接使用原始百度坐标，零偏差 |
-| Google | `fineme-gmap-card` | WGS84 | 直接使用 HA 存储的 WGS84 坐标 |
-| OSM (默认) | HA 内置地图 | WGS84 | 直接使用 HA 存储的 WGS84 坐标 |
-
-> **手动注册资源**: 如自动注册失败，在 设置 → 仪表盘 → 资源 中手动添加：
-> `/fineme/fineme-amap-card.js` / `/fineme/fineme-bmap-card.js` / `/fineme/fineme-gmap-card.js`，类型: JavaScript 模块
+> 坐标已自动转换，在 HA 默认地图 (OSM) 上位置准确。原始 BD09 坐标保存在 entity attributes 的 `bd09_latitude` / `bd09_longitude` 中。
 
 ## 技术说明
 
@@ -187,10 +117,6 @@ custom_components/fineme/
 ├── manifest.json        # 集成元数据
 ├── sensor.py            # 传感器 (电量/信号/速度/告警/固件)
 ├── strings.json         # UI 字符串
-├── www/
-│   ├── fineme-amap-card.js   # 高德地图卡片
-│   ├── fineme-bmap-card.js   # 百度地图卡片
-│   └── fineme-gmap-card.js   # Google Maps 卡片
 └── translations/
     ├── en.json
     └── zh-Hans.json

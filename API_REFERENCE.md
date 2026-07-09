@@ -6,17 +6,17 @@
 |---|---|
 | 设备品牌 | Fineme (方案) |
 | 设备型号 | B6 (Model 513) |
-| 设备名称 | B6-XXXXX (示例) |
-| Device ID | YOUR_DEVICE_ID |
-| IMEI/SN | YOUR_IMEI |
+| 设备名称 | B6-05086 |
+| Device ID | 714574708 |
+| IMEI/SN | 865016309205086 |
 | 芯片方案 | S281 (汇顶/移远 GPS 定位芯片) |
 | 固件版本 | TY281V1.3 / S281_V1.1.0_T6 (2023-06-30) |
 | 供应商 ID | 6222 |
 | 到期时间 | 2123-08-18 (永久) |
-| ICCID | YOUR_ICCID |
-| IMSI | YOUR_IMSI |
+| ICCID | 89860000192037719209 |
+| IMSI | 460002581993344 |
 | PLMN | 46000 (中国移动 GSM) |
-| 账号格式 | IMEI号 / 自设密码 |
+| 测试账号 | 865016309205086 / 123456 |
 
 ## 2. API 基础信息
 
@@ -55,8 +55,8 @@
 **请求参数**:
 | 参数 | 类型 | 说明 | 示例 |
 |---|---|---|---|
-| Name | string | 账号 (IMEI号或用户名) | YOUR_IMEI |
-| Pass | string | 密码 | YOUR_PASSWORD |
+| Name | string | 账号 (IMEI号或用户名) | 865016309205086 |
+| Pass | string | 密码 | 123456 |
 | AppID | string | 应用ID (留空) | "" |
 | GMT | string | 时区偏移 | 8:00 |
 | Key | string | 默认API Key | 7DU2DJFDR8321 |
@@ -67,13 +67,13 @@
   "state": "0",           // "0"=成功, 其他=失败
   "loginType": "1",       // "0"=用户登录, "1"=设备直登
   "deviceInfo": {         // loginType=1 时存在
-    "deviceID": "YOUR_DEVICE_ID",
-    "deviceName": "B6-XXXXX",
+    "deviceID": "714574708",
+    "deviceName": "B6-05086",
     "model": "513",
     "sendCommand": "0-0-0-0-0-0-0-0-0-0",
     "timeZone": "8:00",
     "warnStr": "1-1-1-1-1-1-1-1-1-1-1-1-1",
-    "key2018": "BASE64_TOKEN_STRING",
+    "key2018": "rHpQtP785KFfHGVB+euoETS/...",
     "supplierID": "6222"
   }
   // loginType=0 时使用 "deviceUser" 字段
@@ -96,7 +96,7 @@
 **请求参数**:
 | 参数 | 类型 | 说明 | 示例 |
 |---|---|---|---|
-| DeviceID | int | 设备ID | YOUR_DEVICE_ID |
+| DeviceID | int | 设备ID | 714574708 |
 | Model | int | 设备型号 (0=自动) | 0 |
 | TimeZones | string | 时区 | 8:00 |
 | MapType | string | 地图类型 | BaiDu |
@@ -143,7 +143,7 @@
 ```json
 {
   "state": "0",
-  "id": "YOUR_DEVICE_ID",
+  "id": "714574708",
   "xinhao": ".....",              // 信号强度 (点数=格数, 0-5)
   "status": "2-电量:6%,充电中",    // 同 tracking 的 status
   "sendCommand": "0-0-0-0-0-0-0-0-0-0",
@@ -167,9 +167,9 @@
 ```json
 {
   "state": "0",
-  "id": "YOUR_DEVICE_ID",
-  "name": "B6-XXXXX",
-  "sn": "YOUR_IMEI",
+  "id": "714574708",
+  "name": "B6-05086",
+  "sn": "865016309205086",
   "type": "B6",
   "model": "513",
   "speedLimit": "0.00",
@@ -182,9 +182,9 @@
   "ITEM": "S281_W+G+L_XMG",
   "VER": "S281_W+G+L_XMG&2023-06-30|14-34-30&TY281V1.3&S281_V1.1.0_T6",
   "PLMN": "46000",
-  "IMEI": "YOUR_IMEI",
-  "IMSI": "YOUR_IMSI",
-  "ICCID": "YOUR_ICCID",
+  "IMEI": "865016309205086",
+  "IMSI": "460002581993344",
+  "ICCID": "89860000192037719209",
   "OWNER": "",
   "hireExpireTime": "2123-08-18",
   "createTime": "2023-09-01"
@@ -198,7 +198,7 @@
 **请求参数**:
 | 参数 | 类型 | 说明 | 示例 |
 |---|---|---|---|
-| DeviceID | int | 设备ID | YOUR_DEVICE_ID |
+| DeviceID | int | 设备ID | 714574708 |
 | CommandType | string | 指令类型 | S168JUST |
 | Model | int | 设备型号 | 513 |
 | Paramter | string | 参数 (注意拼写!) | "" |
@@ -273,7 +273,7 @@
   "id": 12345,            // 告警ID
   "warnTxt": "求救报警",   // 告警内容
   "warnTime": "2026/07/09 22:18",
-  "deviceID": YOUR_DEVICE_ID
+  "deviceID": 714574708
 }
 ```
 
@@ -306,9 +306,9 @@
 - type=2/4/5 → "Google"
 - 其他 → ""
 
-**百度地图 API Key**: `YOUR_BAIDU_KEY`
-**Google Maps API Key**: `YOUR_GOOGLE_KEY`
-**高德地图 API Key**: `YOUR_AMAP_KEY`
+**百度地图 API Key**: `IyYOGRTOvkIit2osh1UA5vByXPY4N5wu`
+**Google Maps API Key**: `AIzaSyCwb9IqNEHfaLqh_ex5QY4HQ_IYxrQFF4w`
+**高德地图 API Key**: `9582d1736f0764d428e71660183c7031`
 
 ## 5. 数据存储 (SharedPreferences "config")
 
