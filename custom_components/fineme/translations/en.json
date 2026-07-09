@@ -84,6 +84,15 @@
             "emergency": {
                 "name": "Emergency Mode"
             },
+            "voice_listen": {
+                "name": "Voice Listen"
+            },
+            "voice_call": {
+                "name": "Voice Call"
+            },
+            "reboot": {
+                "name": "Remote Reboot"
+            },
             "power_off": {
                 "name": "Force Power Off"
             }

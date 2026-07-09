@@ -84,6 +84,15 @@
             "emergency": {
                 "name": "紧急模式"
             },
+            "voice_listen": {
+                "name": "语音监听"
+            },
+            "voice_call": {
+                "name": "语音回拨"
+            },
+            "reboot": {
+                "name": "在线重启"
+            },
             "power_off": {
                 "name": "强制关机"
             }

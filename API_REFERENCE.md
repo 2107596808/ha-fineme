@@ -214,18 +214,70 @@
 - `-5`: 指令已发送 (部分型号等待响应)
 - `-6`: 指令响应异常
 
-**指令类型 (CommandType)**:
-| 指令 | 功能 | 适用型号 |
-|---|---|---|
-| `S168JUST` | 立即定位 | 501-513 (S168系列) |
-| `S168POWERDN` | 强制关机 | 505/506/507/508/513/98 |
-| `CR` | 通用位置请求 | 其他型号 |
-| `WTWDSHUTDOWN` | 远程关机 | 98/97 (WTWD系列) |
-| `WTWDCQ` | 远程重启 | 98 |
-| `NBLJDW` | 内部定位 | 99 |
-| `WTWDLJDW` | 外部定位 | 97/98 |
-| `S168FINDME` | 寻找设备 (发声) | S168系列 |
-| `S168URGENT` | 紧急模式 (高频定位) | 508/513 |
+### 3.5.1 指令类型 (CommandType) 完整列表
+
+**S168 系列指令** (适用于 Model 501-513):
+| 指令 | 功能 | 参数 | 适用型号 | 来源 |
+|---|---|---|---|---|
+| `S168JUST` | 立即定位 | "" | 501-513 | DeviceTracking |
+| `S168POWERDN` | 强制关机 | "" | 505/506/507/508/513/98 | Home |
+| `S168FINDME` | 寻找设备 (发声) | "" | S168系列 | Setting |
+| `S168URGENT` | 紧急模式 (高频定位) | "" | 508/513 | Setting |
+| `S168LISTEN` | 语音监听 | "" | 503/505/506/507/508/509/510/512/513 | VoiceComm |
+| `S168BCALL` | 语音回拨 | "" | S168系列 | Setting |
+| `S168REBOOT` | 在线重启 | "" | S168系列 | Setting |
+| `S168PROFILE` | 场景模式切换 | 模式值 | S168系列 | Setting |
+
+**BSJ 系列指令** (适用于 Model 23 和部分 S168 型号):
+| 指令 | 功能 | 参数 | 适用型号 | 来源 |
+|---|---|---|---|---|
+| `BSJSF` | 设置电子围栏 | "灵敏度-通知方式" (如 "0080-0") | 23 | Setting2 |
+| `BSJCF` | 清除电子围栏 | "" | 23 | Setting2 |
+| `BSJDXH` | 设置短信报警号码 | 手机号 | 23 | Setting2 |
+| `BSJSPEED` | 设置超速报警值 | 速度(km/h) | 23 | Setting2 |
+| `BSJSPEEDOFF` | 关闭超速报警 | "" | 23 | Setting2 |
+| `BSJWORKMODEL` | 设置工作模式 | "0"/"1"/"2" | 23 | Setting2 |
+| `BSJSLEEP` | 超级省电模式 | "60"/"120"/"240"/"480"/"720" (分钟) | 23 | Setting2 |
+| `BSJSLEEPOFF` | 关闭省电模式 | "" | 23 | Setting2 |
+| `BSJSOUND` | 录音时长设置 | "15"/"30" (秒) | 23 | VoiceComm |
+
+**WTWD 系列指令** (适用于 Model 97/98):
+| 指令 | 功能 | 参数 | 适用型号 | 来源 |
+|---|---|---|---|---|
+| `WTWDSHUTDOWN` | 远程关机 | "" | 98/97 | Home |
+| `WTWDCQ` | 远程重启 | "" | 98 | Home |
+| `WTWDLY` | 温度延迟设置 | "30"/"60"/"180"/"300" (秒) | 98/97 | VoiceComm |
+| `WTWDXCLY` | 温度持续录音开关 | "0"/"1" | 98/97 | VoiceComm |
+| `WTWDSKLY` | 温度声控录音开关 | "0"/"1" | 98/97 | VoiceComm |
+
+**808 系列指令** (适用于 Model 90):
+| 指令 | 功能 | 参数 | 适用型号 | 来源 |
+|---|---|---|---|---|
+| `808DYD` | 断油电 | "" | 90 | Setting2 |
+| `808HFYD` | 恢复油电 | "" | 90 | Setting2 |
+| `808SF` | 设置围栏 | "灵敏度-通知方式" | 90 | Setting2 |
+| `808CF` | 清除围栏 | "" | 90 | Setting2 |
+| `808DXH` | 设置短信报警号码 | 手机号 | 90 | Setting2 |
+| `808SPEED` | 设置超速报警 | 速度值 | 90 | Setting2 |
+
+**其他指令**:
+| 指令 | 功能 | 参数 | 适用型号 | 来源 |
+|---|---|---|---|---|
+| `CR` | 通用位置请求 | "" | 150/152/155/156/157/160-163 | Web |
+| `TIMER` | 上报间隔设置 | 秒数 | 23 | Setting2 |
+| `MC` | 设置监听号码 | 手机号 | 23 | Setting2 |
+| `FLOWER` | 爱心等级 | "1"-"5" | 通用 | Love |
+| `SAVE` | 智能录音模式 | "0"/"1"/"2" | 505/508/510/512/513 | VoiceComm |
+| `NBLJDW` | 内部定位 | "" | 99 | (已知) |
+| `WTWDLJDW` | 外部定位 | "" | 97/98 | (已知) |
+
+**Model 513 (B6) 可用指令汇总**:
+- `S168JUST` — 立即定位
+- `S168POWERDN` — 强制关机
+- `S168FINDME` — 寻找设备
+- `S168URGENT` — 紧急模式
+- `S168LISTEN` — 语音监听
+- `SAVE` — 智能录音模式
 
 **Model 513 特殊处理**:
 - 追踪页隐藏"刷新"按钮，显示"立即定位"按钮
@@ -292,6 +344,195 @@
 
 **响应**: 地址文本字符串
 
+### 3.9 GetDeviceSetInfo - 获取设备设置
+
+**Endpoint**: `POST /GetDeviceSetInfo`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| Key | string | key2018 |
+
+**响应 JSON** (Model 23):
+```json
+{
+  "state": "0",
+  "BSJWORKMODEL": "0",
+  "timer": "60",
+  "BSJSLEEP": "",
+  "BSJSF": "",
+  "BSJSPEED": "0",
+  "BSJDXH": "",
+  "ywsleep": ""
+}
+```
+
+**响应 JSON** (Model 90):
+```json
+{
+  "state": "0",
+  "center": "",
+  "808SF": "",
+  "BSJSPEED": "0"
+}
+```
+
+### 3.10 GetVoiceList - 获取语音列表
+
+**Endpoint**: `POST /GetVoiceList`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| PageNo | int | 页码 |
+| PageCount | int | 每页数量 (30) |
+| Key | string | key2018 |
+
+**响应 JSON**:
+```json
+{
+  "state": "0",
+  "arr": [
+    {
+      "VoiceId": "123",
+      "Path": "/voice/path",
+      "CreateTime": "2026-07-09 22:00",
+      "Length": "15",
+      "Source": "1"
+    }
+  ]
+}
+```
+
+### 3.11 GetVoiceNew - 获取新语音
+
+**Endpoint**: `POST /GetVoiceNew`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| VoiceId | int | 语音ID |
+| Key | string | key2018 |
+
+### 3.12 SendVoice - 发送语音到设备
+
+**Endpoint**: `POST /SendVoice`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| Type | string | 类型 ("0") |
+| Voice | string | 语音数据 (hex编码的AMR) |
+| Length | int | 时长(秒) |
+| Key | string | key2018 |
+
+### 3.13 DeletedVoiceByDeviceID - 删除设备语音
+
+**Endpoint**: `POST /DeletedVoiceByDeviceID`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| Key | string | key2018 |
+
+### 3.14 UpdateDevice - 更新设备信息
+
+**Endpoint**: `POST /UpdateDevice`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| DeviceName | string | 设备名称 |
+| CarNum | string | 车牌号 |
+| PhoneNumbe | string | 设备电话号码 |
+| CarUserName | string | 联系人姓名 |
+| CellPhone | string | 联系人手机 |
+| Key | string | key2018 |
+
+**响应**: state `"2005"` = 成功, `"2003"` = 昵称已存在
+
+### 3.15 SetWarn - 设置告警偏好
+
+**Endpoint**: `POST /SetWarn`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| ID | int | 用户ID或设备ID |
+| TypeID | int | 类型 (0=用户, 1=设备) |
+| WarnStr | string | "1-1-1-1-1-1-1-1-1-1-1-1-1" (13位) |
+| Key | string | key2018 |
+
+### 3.16 GetGeofence - 获取电子围栏列表
+
+**Endpoint**: `POST /GetGeofence`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| TimeZones | string | 时区 |
+| MapType | string | 地图类型 |
+| Key | string | key2018 |
+
+**响应 JSON**:
+```json
+{
+  "state": "0",
+  "geofences": [
+    {
+      "geofenceID": 123,
+      "fenceName": "家",
+      "lng": "111.033",
+      "lat": "21.537",
+      "radius": "500",
+      "createTime": "2026-01-01"
+    }
+  ]
+}
+```
+
+### 3.17 DelGeofence - 删除电子围栏
+
+**Endpoint**: `POST /DelGeofence`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| GeofenceID | int | 围栏ID |
+| DeviceID | int | 设备ID |
+| Key | string | key2018 |
+
+### 3.18 GetDevicesHistory - 获取历史轨迹
+
+**Endpoint**: `POST /GetDevicesHistory`
+
+**请求参数**:
+| 参数 | 类型 | 说明 |
+|---|---|---|
+| DeviceID | int | 设备ID |
+| StartTime | string | "yyyy/MM/dd HH:mm:ss" |
+| EndTime | string | "yyyy/MM/dd HH:mm:ss" |
+| TimeZones | string | 时区 |
+| ShowLBS | string | "0"或"1" (是否显示LBS点) |
+| MapType | string | 地图类型 |
+| SelectCount | int | 最大点数 (1000) |
+| Key | string | key2018 |
+
+**响应 JSON**:
+```json
+{
+  "state": "0",
+  "devices": [ ... ]  // 历史点位数组
+}
+```
+
 ## 4. 地图引擎支持
 
 | 类型编号 | 地图 | SDK | 说明 |
@@ -353,7 +594,9 @@ custom_components/fineme/
 ├── device_tracker.py    # device_tracker: lat/lng/accuracy/speed/course
 ├── sensor.py            # battery/signal/speed/alarm/firmware/iccid/imei
 ├── binary_sensor.py     # charging/online/sleeping/sos_alarm
-├── button.py            # locate_now(S168JUST) / power_off(S168POWERDN)
+├── button.py            # locate_now(S168JUST) / find_device(S168FINDME) / emergency(S168URGENT)
+│                        # voice_listen(S168LISTEN) / voice_call(S168BCALL) / reboot(S168REBOOT)
+│                        # power_off(S168POWERDN)
 ├── strings.json         # UI 字符串 (默认)
 └── translations/
     ├── zh-Hans.json     # 中文
