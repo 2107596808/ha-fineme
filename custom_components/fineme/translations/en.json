@@ -78,6 +78,9 @@
             "locate_now": {
                 "name": "Locate Now"
             },
+            "find_device": {
+                "name": "Find Device"
+            },
             "power_off": {
                 "name": "Force Power Off"
             }

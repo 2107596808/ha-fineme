@@ -14,6 +14,7 @@ from .api import FinemeAPIError
 from .const import (
     CMD_LOCATE_NOW,
     CMD_POWER_OFF,
+    CMD_FIND_DEVICE,
     CONF_DEVICE_ID,
     CONF_DEVICE_NAME,
     CONF_MODEL,
@@ -39,6 +40,14 @@ BUTTON_DESCRIPTIONS: tuple[FinemeButtonEntityDescription, ...] = (
         name="立即定位",
         icon="mdi:crosshairs-gps",
         command_type=CMD_LOCATE_NOW,
+        confirm_required=False,
+    ),
+    FinemeButtonEntityDescription(
+        key="find_device",
+        translation_key="find_device",
+        name="寻找设备",
+        icon="mdi:bell-ring",
+        command_type=CMD_FIND_DEVICE,
         confirm_required=False,
     ),
     FinemeButtonEntityDescription(

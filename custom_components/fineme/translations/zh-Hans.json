@@ -78,6 +78,9 @@
             "locate_now": {
                 "name": "立即定位"
             },
+            "find_device": {
+                "name": "寻找设备"
+            },
             "power_off": {
                 "name": "强制关机"
             }

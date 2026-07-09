@@ -23,6 +23,7 @@ DEFAULT_TIME_ZONE = "8:00"
 # Command types for Model 513 (S168 series)
 CMD_LOCATE_NOW = "S168JUST"
 CMD_POWER_OFF = "S168POWERDN"
+CMD_FIND_DEVICE = "S168FINDME"
 
 # Supported device models
 SUPPORTED_MODELS = [513]
