@@ -9,6 +9,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import FinemeAPI, FinemeAPIError
 from .const import (
+    CMD_LOCATE_NOW,
     CONF_DEVICE_ID,
     CONF_KEY2018,
     CONF_TIME_ZONE,
@@ -47,6 +48,23 @@ class FinemeCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self) -> dict:
         """Fetch data from API endpoints."""
         try:
+            # Wake device by sending locate command before fetching data.
+            # The device only reports fresh data when it receives a command;
+            # otherwise the server returns stale cached data.
+            try:
+                await self.api.send_command(
+                    device_id=self.device_id,
+                    command_type=CMD_LOCATE_NOW,
+                    model=self.model,
+                    key=self.key,
+                )
+            except FinemeAPIError as err:
+                # If wake command fails (e.g. device offline), continue with cached data
+                _LOGGER.debug("Wake command failed, using cached data: %s", err)
+
+            # Brief delay for device to process the wake command and report
+            await asyncio.sleep(2)
+
             # Fetch tracking and status in parallel
             tracking_task = self.api.get_tracking(
                 self.device_id, self.key, self.time_zone
